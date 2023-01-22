@@ -8,8 +8,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-//const token = "5943126550:AAGiJSsIQv1qHcQ8mMfhOS5UVXzD5FvVU5E"
-
 func main() {
 	godotenv.Load()
 
