@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/nosleepda/bot/internal/service/product"
 )
@@ -18,6 +19,12 @@ func NewCommander(bot *tgbotapi.BotAPI, productService *product.Service) *Comman
 }
 
 func (c *Commander) HandleUpdate(update tgbotapi.Update) {
+	defer func() {
+		if panicValue := recover(); panicValue != nil {
+			fmt.Printf("recoverd from panic: %v", panicValue)
+		}
+	}()
+
 	if update.Message == nil {
 		return
 	}
@@ -27,6 +34,8 @@ func (c *Commander) HandleUpdate(update tgbotapi.Update) {
 		c.Help(update.Message)
 	case "list":
 		c.List(update.Message)
+	case "get":
+		c.Get(update.Message)
 	default:
 		c.Default(update.Message)
 	}
