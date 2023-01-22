@@ -1,7 +1,39 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
+
+const token = "TOKEN"
 
 func main() {
-	fmt.Print("hello")
+	bot, err := tgbotapi.NewBotAPI(token)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	bot.Debug = true
+
+	log.Printf("Authorized on account %s", bot.Self.UserName)
+
+	u := tgbotapi.UpdateConfig{
+		Timeout: 60,
+	}
+
+	updates := bot.GetUpdatesChan(u)
+
+	for update := range updates {
+		if update.Message != nil { // If we got a message
+			log.Printf("[%s] %s", update.Message.From.UserName, "You wrote: "+update.Message.Text)
+
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+
+			_, err := bot.Send(msg)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
 }
